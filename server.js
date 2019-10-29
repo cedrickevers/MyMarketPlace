@@ -1,5 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
+const authRoutes =require("./routes/user");
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
@@ -20,6 +21,7 @@ const io = require('socket.io')(http);
 
 
 
+  
 mongoose.connect(config.database, function(err) {
   if (err) console.log(err);
   console.log("All Seven wins you' r connected");
@@ -29,6 +31,7 @@ app.engine('.hbs', expressHbs({ defaultLayout: 'layout', extname: '.hbs' }));
 app.set('view engine', 'hbs');
 app.use(express.static(__dirname + '/public'));
 app.use(morgan('dev'));
+app.use("/auth", authRoutes);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
@@ -46,7 +49,7 @@ app.use(function(req, res, next) {
 });
 
 io.use(passportSocketIo.authorize({
-  cookieParser: cookieParser,       // the same middleware you registrer in express
+  cookieParser: cookieParser,       // the same middleware registrer in express
   key:          'connect.sid',       // the name of the cookie where express/connect stores its session_id
   secret:       config.secret,    // the session_secret to parse the cookie
   store:        sessionStore,        // we NEED to use a sessionstore. no memorystore please

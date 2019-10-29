@@ -48,6 +48,15 @@ router.route('/login')
     failureFlash : true // allow flash messages
   }));
 
+
+  /* Auth With Google*/
+ router.get("/google", (req, res) => {
+  res.render('accounts/login-google', { message: req.flash('loginMessage')});
+
+   res.send("connecter avec Google");
+ })
+
+
 /* PROFILE ROUTE */
 router.get('/profile', passportConfig.isAuthenticated, (req, res, next) => {
   res.render('accounts/profile');
